@@ -1,5 +1,5 @@
 import { IsEmail, IsString, MinLength, IsInt } from "class-validator";
-import { LoginRequest, RegisterRequest, ValidateRequest, GetUserRequest, RemoveRequest } from "./auth.pb";
+import { LoginRequest, RegisterRequest, ValidateRequest, GetUserRequest, RemoveRequest, RecoveryRequest } from "./auth.pb";
 
 export class LoginRequestDto implements LoginRequest {
     @IsEmail()
@@ -31,4 +31,9 @@ export class GetUserRequestDto implements GetUserRequest {
 export class RemoveRequestDto implements RemoveRequest {
     @IsString()
     public readonly token: string;
+}
+
+export class RecoveryRequestDto implements RecoveryRequest {
+    @IsString()
+    public readonly email: string;
 }

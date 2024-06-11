@@ -7,6 +7,7 @@ import { AuthService } from './service/auth.service';
 import { JwtService } from './service/jwt.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import * as dotenv from 'dotenv';
+import { EmailService } from './extra/send_email';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ dotenv.config();
     TypeOrmModule.forFeature([Auth]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtService, JwtStrategy],
+  providers: [AuthService, JwtService, JwtStrategy, EmailService],
+  exports: [EmailService]
 })
 export class AuthModule {}

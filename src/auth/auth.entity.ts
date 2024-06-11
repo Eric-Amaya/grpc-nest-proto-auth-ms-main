@@ -16,4 +16,7 @@ export class Auth extends BaseEntity {
 
     @Column( {type: 'enum', default: Role.USER, enum: Role} )
     public role: Role;
+
+    @Column( {type: 'varchar', nullable: true} )
+    public recoveryCode: string;
 }

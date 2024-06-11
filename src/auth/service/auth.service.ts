@@ -2,14 +2,18 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from './jwt.service';
-import { RegisterRequestDto, LoginRequestDto, ValidateRequestDto, RemoveRequestDto } from '../auth.dto';
+import { RegisterRequestDto, LoginRequestDto, ValidateRequestDto, RemoveRequestDto, RecoveryRequestDto } from '../auth.dto';
 import { Auth } from '../auth.entity';
-import { GetUserRequest, GetUserResponse, LoginResponse, RegisterResponse, RemoveResponse, ValidateResponse } from '../auth.pb';
+import { GetUserRequest, GetUserResponse, LoginResponse, RecoveryResponse, RegisterResponse, RemoveResponse, ValidateResponse } from '../auth.pb';
+import { EmailService } from '../extra/send_email';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
     @InjectRepository(Auth)
     private readonly repository: Repository<Auth>;
+    @Inject(EmailService)
+    private readonly emailService: EmailService;
 
     @Inject(JwtService)
     private readonly jwtService: JwtService;
@@ -92,4 +96,38 @@ export class AuthService {
     
         return { status: HttpStatus.OK, error: null };
       }
+
+    public async recovery ({ email }: RecoveryRequestDto) : Promise <RecoveryResponse>{
+        const user: Auth = await this.repository.findOne({ where: { email } });
+
+        if(!user) {
+            return { status: HttpStatus.NOT_FOUND, error: ['Email not found']};
+        }
+
+        const code_recovery = this.generatedPassword(10);
+        const crypt_code = this.jwtService.encodePassword(code_recovery);
+        const to = email;
+        const subject = "Password recovery";
+        const text = `Here you have your code to recovery your password:\n${code_recovery}`
+        await this.emailService.sendEmail(to,subject,text); 
+
+        user.recoveryCode = crypt_code;
+
+        await this.repository.save(user);
+
+        return { status: HttpStatus.CREATED, error: null }; 
+    }
+
+    private generatedPassword = (length: number): string => { 
+        const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const buffer = randomBytes(length);
+        let randomCode = '';
+    
+        for (let i = 0; i < length; i++) {
+          const randomIndex = buffer.readUInt8(i) % charset.length;
+          randomCode += charset[randomIndex];
+        }
+    
+        return randomCode;
+    }
 }
