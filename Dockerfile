@@ -19,7 +19,6 @@ RUN npm install
 COPY . .
 
 # Run proto install and generate TypeScript files from proto files
-RUN npm run proto:install
 RUN npm run proto:auth
 
 # Make port 5051 available to the world outside this container
