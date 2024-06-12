@@ -41,12 +41,12 @@ export class AuthController {
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'VerifyCode')
     private verifyCode(payload: VerifyCodeRequestDto): Promise<VerifyCodeResponse> {
-        return this.service.recovery(payload);
+        return this.service.verifyCode(payload);
     } 
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'ChangePassword')
     private changePassword(payload: ChangePasswordRequestDto): Promise<ChangePasswordResponse> {
-        return this.service.recovery(payload);
+        return this.service.changePassword(payload);
     } 
 
 }

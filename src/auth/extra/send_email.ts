@@ -7,7 +7,7 @@ dotenv.config();
 
 @Injectable()
 export class EmailService {
-  async sendEmail(to: string, subject: string, text: string) {
+  async sendEmail(to: string, subject: string, html: string) {
     const oAuth2Client = new google.auth.OAuth2(
       process.env.CLIENT_ID,
       process.env.CLIENT_SECRET,
@@ -34,10 +34,10 @@ export class EmailService {
 
     try {
         const info = await transporter.sendMail({
-          from: 'noreply.service.restock@gmail.com',
+          from: '"Recuperación de contraseña" <noreply.service.restock@gmail.com>',
           to: to,
           subject: subject,
-          text: text,
+          html: html,
         });
     
         console.log('Correo electrónico enviado correctamente:', info.response);

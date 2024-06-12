@@ -14,7 +14,6 @@ export class AuthService {
     private readonly repository: Repository<Auth>;
     @Inject(EmailService)
     private readonly emailService: EmailService;
-
     @Inject(JwtService)
     private readonly jwtService: JwtService;
 
@@ -107,9 +106,64 @@ export class AuthService {
         const code_recovery = this.generatedPassword(10);
         const crypt_code = this.jwtService.encodePassword(code_recovery);
         const to = email;
-        const subject = "Password recovery";
-        const text = `Here you have your code to recovery your password:\n${code_recovery}`
-        await this.emailService.sendEmail(to,subject,text); 
+        const subject = "Recuperación de contraseña";
+        const htmlContent = `
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Recuperación de Contraseña</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        color: #333;
+                    }
+                    .container {
+                        width: 100%;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        border: 1px solid #ddd;
+                        border-radius: 5px;
+                        background-color: #f9f9f9;
+                    }
+                    .header {
+                        text-align: center;
+                        padding-bottom: 20px;
+                    }
+                    .code {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #d9534f;
+                        text-align: center;
+                        margin: 20px 0;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 20px;
+                        font-size: 12px;
+                        color: #777;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Recuperación de Contraseña</h1>
+                    </div>
+                    <p>Hola,</p>
+                    <p>Has solicitado recuperar tu contraseña. Aquí tienes tu código de recuperación:</p>
+                    <div class="code">${code_recovery}</div>
+                    <p>Si no has solicitado la recuperación de tu contraseña, por favor ignora este correo.</p>
+                    <br>
+                    <p>Atentamente,</p>
+                    <p>Equipo de RESTOCK</p>
+                    <div class="footer">
+                        <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+                    </div>
+                </div>
+            </body>
+        `
+        await this.emailService.sendEmail(to, subject, htmlContent);
 
         user.recoveryCode = crypt_code;
 
