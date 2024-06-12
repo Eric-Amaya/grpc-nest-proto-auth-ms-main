@@ -2,9 +2,9 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from './jwt.service';
-import { RegisterRequestDto, LoginRequestDto, ValidateRequestDto, RemoveRequestDto, RecoveryRequestDto } from '../auth.dto';
+import { RegisterRequestDto, LoginRequestDto, ValidateRequestDto, RemoveRequestDto, RecoveryRequestDto, VerifyCodeRequestDto, ChangePasswordRequestDto } from '../auth.dto';
 import { Auth } from '../auth.entity';
-import { GetUserRequest, GetUserResponse, LoginResponse, RecoveryResponse, RegisterResponse, RemoveResponse, ValidateResponse } from '../auth.pb';
+import { ChangePasswordResponse, GetUserRequest, GetUserResponse, LoginResponse, RecoveryResponse, RegisterResponse, RemoveResponse, ValidateResponse, VerifyCodeResponse } from '../auth.pb';
 import { EmailService } from '../extra/send_email';
 import { randomBytes } from 'crypto';
 
@@ -116,6 +116,41 @@ export class AuthService {
         await this.repository.save(user);
 
         return { status: HttpStatus.CREATED, error: null }; 
+    }
+
+    public async verifyCode ({ email, code }: VerifyCodeRequestDto) : Promise <VerifyCodeResponse>{
+       
+        const user: Auth = await this.repository.findOne({ where: {email} })
+
+        if(!user) {
+            return { status: HttpStatus.NOT_FOUND, error: ['Email not found']};
+        }
+
+        const verifyCode = await this.jwtService.isCodeValid(code,user.recoveryCode);
+        if (!verifyCode) {
+            return { status: HttpStatus.NOT_FOUND, error: ['Invalid recovery code']}
+        }
+
+        return {status: HttpStatus.OK, error: null}
+    }
+
+    public async changePassword ({ email, code, newPassword, confirmPassword}: ChangePasswordRequestDto): Promise <ChangePasswordResponse> {
+        
+        const user: Auth = await this.repository.findOne({ where: {email} });
+
+        if(!user) {
+            return { status: HttpStatus.NOT_FOUND, error: ['Email not found']};
+        }
+
+        if (!code || !(newPassword === confirmPassword)) {
+            return { status: HttpStatus.NOT_FOUND, error: ['Password do not match']};
+        }
+
+        user.password = await this.jwtService.encodePassword(newPassword);
+        user.recoveryCode = null;
+        await this.repository.save(user);
+
+        return {status: HttpStatus.OK, error: null}
     }
 
     private generatedPassword = (length: number): string => { 

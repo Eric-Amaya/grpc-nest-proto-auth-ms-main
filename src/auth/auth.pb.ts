@@ -87,6 +87,28 @@ export interface RecoveryResponse {
   error: string[];
 }
 
+export interface VerifyCodeRequest {
+  email: string;
+  code: string;
+}
+
+export interface VerifyCodeResponse {
+  status: number;
+  error: string[];
+}
+
+export interface ChangePasswordRequest {
+  email: string;
+  code: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  status: number;
+  error: string[];
+}
+
 export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
@@ -103,6 +125,10 @@ export interface AuthServiceClient {
   getUser(request: GetUserRequest): Observable<GetUserResponse>;
 
   recovery(request: RecoveryRequest): Observable<RecoveryResponse>;
+
+  changePassword(request: ChangePasswordRequest): Observable<ChangePasswordResponse>;
+
+  verifyCode(request: VerifyCodeRequest): Observable<VerifyCodeResponse>;
 }
 
 export interface AuthServiceController {
@@ -119,11 +145,29 @@ export interface AuthServiceController {
   getUser(request: GetUserRequest): Promise<GetUserResponse> | Observable<GetUserResponse> | GetUserResponse;
 
   recovery(request: RecoveryRequest): Promise<RecoveryResponse> | Observable<RecoveryResponse> | RecoveryResponse;
+
+  changePassword(
+    request: ChangePasswordRequest,
+  ): Promise<ChangePasswordResponse> | Observable<ChangePasswordResponse> | ChangePasswordResponse;
+
+  verifyCode(
+    request: VerifyCodeRequest,
+  ): Promise<VerifyCodeResponse> | Observable<VerifyCodeResponse> | VerifyCodeResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register", "login", "validate", "edit", "remove", "getUser", "recovery"];
+    const grpcMethods: string[] = [
+      "register",
+      "login",
+      "validate",
+      "edit",
+      "remove",
+      "getUser",
+      "recovery",
+      "changePassword",
+      "verifyCode",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

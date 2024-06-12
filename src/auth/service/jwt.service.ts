@@ -53,4 +53,9 @@ export class JwtService {
         }
     }
 
+    // Validate recovey code
+    public isCodeValid ( entryCode: string, recoveryCode: string): boolean {
+        return bcrypt.compareSync(entryCode,recoveryCode);
+    }
+
 }

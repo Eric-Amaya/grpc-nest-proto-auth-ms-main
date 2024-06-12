@@ -1,7 +1,7 @@
 import { Controller, Inject } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { LoginRequestDto, RecoveryRequestDto, RegisterRequestDto, RemoveRequestDto, ValidateRequestDto } from './auth.dto';
-import { AUTH_SERVICE_NAME, RegisterResponse, LoginResponse, ValidateResponse, GetUserRequest, GetUserResponse, RemoveResponse, RecoveryResponse } from './auth.pb';
+import { ChangePasswordRequestDto, LoginRequestDto, RecoveryRequestDto, RegisterRequestDto, RemoveRequestDto, ValidateRequestDto, VerifyCodeRequestDto } from './auth.dto';
+import { AUTH_SERVICE_NAME, RegisterResponse, LoginResponse, ValidateResponse, GetUserRequest, GetUserResponse, RemoveResponse, RecoveryResponse, VerifyCodeRequest, VerifyCodeResponse, ChangePasswordRequest, ChangePasswordResponse } from './auth.pb';
 import { AuthService } from './service/auth.service';
 
 @Controller()
@@ -36,6 +36,16 @@ export class AuthController {
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'Recovery')
     private recovery(payload: RecoveryRequestDto): Promise<RecoveryResponse> {
+        return this.service.recovery(payload);
+    } 
+
+    @GrpcMethod(AUTH_SERVICE_NAME, 'VerifyCode')
+    private verifyCode(payload: VerifyCodeRequestDto): Promise<VerifyCodeResponse> {
+        return this.service.recovery(payload);
+    } 
+
+    @GrpcMethod(AUTH_SERVICE_NAME, 'ChangePassword')
+    private changePassword(payload: ChangePasswordRequestDto): Promise<ChangePasswordResponse> {
         return this.service.recovery(payload);
     } 
 
