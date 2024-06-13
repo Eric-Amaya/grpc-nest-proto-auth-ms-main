@@ -7,6 +7,12 @@ export class Auth extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id!: number;
 
+    @Column( { type: 'varchar' })
+    public name!: string;
+
+    @Column( { type: 'varchar' })
+    public rut!:string;
+
     @Column( {type: 'varchar'} )
     public email!: string;
 

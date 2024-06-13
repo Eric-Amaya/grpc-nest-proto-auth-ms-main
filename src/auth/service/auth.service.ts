@@ -27,7 +27,7 @@ export class AuthService {
         return { status: HttpStatus.OK, error: null, user };
       }
 
-    public async register( { email, password }: RegisterRequestDto): Promise<RegisterResponse> {
+    public async register( { name, rut, email, password }: RegisterRequestDto): Promise<RegisterResponse> {
         let auth: Auth = await this.repository.findOne({ where: { email }});
 
         if(auth) {
@@ -36,6 +36,8 @@ export class AuthService {
 
         auth = new Auth();
 
+        auth.name = name;
+        auth.rut = rut;
         auth.email = email;
         auth.password = this.jwtService.encodePassword(password);
 

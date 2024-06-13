@@ -10,6 +10,12 @@ export class LoginRequestDto implements LoginRequest {
 }
 
 export class RegisterRequestDto implements RegisterRequest {
+    @IsString()
+    public readonly name: string;
+
+    @IsString()
+    public readonly rut: string;
+    
     @IsEmail()
     public readonly email: string;
 
