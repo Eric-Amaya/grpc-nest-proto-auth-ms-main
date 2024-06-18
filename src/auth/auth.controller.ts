@@ -10,42 +10,42 @@ export class AuthController {
     private readonly service: AuthService;
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'GetUser')
-    private getUser(payload: GetUserRequest): Promise<GetUserResponse> {
+    getUser(payload: GetUserRequest): Promise<GetUserResponse> {
         return this.service.getUser(payload);
     }
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'Register')
-    private register(payload: RegisterRequestDto): Promise<RegisterResponse> {
+    register(payload: RegisterRequestDto): Promise<RegisterResponse> {
         return this.service.register(payload);
     }
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'Login')
-    private login(payload: LoginRequestDto): Promise<LoginResponse> {
+    login(payload: LoginRequestDto): Promise<LoginResponse> {
         return this.service.login(payload);
     }
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'Validate')
-    private validate(payload: ValidateRequestDto): Promise<ValidateResponse> {
+    validate(payload: ValidateRequestDto): Promise<ValidateResponse> {
         return this.service.validate(payload);
     }
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'Remove')
-    private remove(payload: RemoveRequestDto): Promise<RemoveResponse> {
+    remove(payload: RemoveRequestDto): Promise<RemoveResponse> {
         return this.service.remove(payload);
     }
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'Recovery')
-    private recovery(payload: RecoveryRequestDto): Promise<RecoveryResponse> {
+    recovery(payload: RecoveryRequestDto): Promise<RecoveryResponse> {
         return this.service.recovery(payload);
     } 
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'VerifyCode')
-    private verifyCode(payload: VerifyCodeRequestDto): Promise<VerifyCodeResponse> {
+    verifyCode(payload: VerifyCodeRequestDto): Promise<VerifyCodeResponse> {
         return this.service.verifyCode(payload);
     } 
 
     @GrpcMethod(AUTH_SERVICE_NAME, 'ChangePassword')
-    private changePassword(payload: ChangePasswordRequestDto): Promise<ChangePasswordResponse> {
+    changePassword(payload: ChangePasswordRequestDto): Promise<ChangePasswordResponse> {
         return this.service.changePassword(payload);
     } 
 
